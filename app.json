@@ -1,30 +1,59 @@
 {
   "expo": {
-    "name": "mbti-app",
+    "name": "TypeLink",
     "slug": "mbti-app",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "typelink",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F7F5FB"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "com.nikkiai.typelink",
+      "buildNumber": "5",
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": "広告をパーソナライズするために使用します",
+        "NSPhotoLibraryUsageDescription": "TypeLink uses photo library access to save your MBTI type share card to your camera roll. This allows you to share your result on X (Twitter), Instagram, or other social media.",
+        "NSPhotoLibraryAddUsageDescription": "TypeLink saves your MBTI type share card image to your camera roll when you tap the save button. The saved image can then be shared on social media."
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#F7F5FB",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "package": "com.nikkiai.typelink"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sharing",
+      "expo-iap",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-1198964108696763~4107727664",
+          "iosAppId": "ca-app-pub-1198964108696763~4107727664"
+        }
+      ]
+    ],
+    "description": "クイック20問でMBTI性格タイプ診断。シェアカードで友達にシェア、相性もチェック！",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b5d98eee-fa35-4597-bf7b-6da4a4dd6d59"
+      }
+    },
+    "owner": "nikki-r2d2"
   }
 }

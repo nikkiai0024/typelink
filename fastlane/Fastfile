@@ -1,0 +1,53 @@
+default_platform(:ios)
+
+platform :ios do
+
+  desc "TestFlightにビルドをアップロード"
+  lane :beta do
+    build_app(
+      workspace: "ios/TypeLink.xcworkspace",
+      scheme: "TypeLink",
+      export_method: "app-store",
+      export_options: {
+        signingStyle: "automatic"
+      },
+      xcargs: "-allowProvisioningUpdates"
+    )
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "IPAのアップロードのみ（ビルド済み）"
+  lane :upload_only do
+    upload_to_app_store(
+      ipa: "/Users/niki/projects/mbti-app/TypeLink.ipa",
+      submit_for_review: false,
+      automatic_release: false,
+      force: true,
+      skip_screenshots: true,
+      skip_metadata: true
+    )
+  end
+
+  desc "App Storeに申請"
+  lane :release do
+    build_app(
+      workspace: "ios/TypeLink.xcworkspace",
+      scheme: "TypeLink",
+      export_method: "app-store",
+      export_options: {
+        signingStyle: "automatic"
+      },
+      xcargs: "-allowProvisioningUpdates"
+    )
+    upload_to_app_store(
+      submit_for_review: false,
+      automatic_release: false,
+      force: true,
+      skip_screenshots: true,
+      skip_metadata: false
+    )
+  end
+
+end
