@@ -45,7 +45,8 @@
           "androidAppId": "ca-app-pub-1198964108696763~4107727664",
           "iosAppId": "ca-app-pub-1198964108696763~4107727664"
         }
-      ]
+      ],
+      "expo-tracking-transparency"
     ],
     "description": "クイック20問でMBTI性格タイプ診断。シェアカードで友達にシェア、相性もチェック！",
     "extra": {

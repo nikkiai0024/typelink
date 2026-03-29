@@ -1,12 +1,19 @@
 import { useEffect } from "react";
+import { Platform } from "react-native";
 import { Stack } from "expo-router";
 import mobileAds from "react-native-google-mobile-ads";
+import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 
 export default function RootLayout() {
   useEffect(() => {
-    mobileAds()
-      .initialize()
-      .catch((e) => console.warn("AdMob init error:", e));
+    (async () => {
+      if (Platform.OS === "ios") {
+        await requestTrackingPermissionsAsync();
+      }
+      await mobileAds()
+        .initialize()
+        .catch((e) => console.warn("AdMob init error:", e));
+    })();
   }, []);
 
   return (
