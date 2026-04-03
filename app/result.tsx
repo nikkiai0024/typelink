@@ -9,6 +9,8 @@ import { usePurchase } from "../hooks/usePurchase";
 
 export default function ResultScreen() {
   const { type: typeCode } = useLocalSearchParams<{ type: string }>();
+  const router = useRouter();
+  const { isPurchased } = usePurchase(); // purchase は未使用のため destructure しない
 
   useEffect(() => {
     if (typeCode) {
@@ -19,9 +21,19 @@ export default function ResultScreen() {
       }));
     }
   }, [typeCode]);
-  const router = useRouter();
-  const { isPurchased } = usePurchase();
-  const type = mbtiTypes[typeCode ?? ""] ?? mbtiTypes.INFJ;
+
+  // typeCode が無効な場合はホームに戻す（サイレントINFJフォールバックを防ぐ）
+  const type = mbtiTypes[typeCode ?? ""];
+  if (!type) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#F7F5FB", justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: "#9B8AB8", fontSize: 16, marginBottom: 20 }}>結果を取得できませんでした</Text>
+        <Pressable onPress={() => router.replace("/")} style={{ backgroundColor: "#7B5EA7", paddingHorizontal: 24, paddingVertical: 12, borderRadius: 20 }}>
+          <Text style={{ color: "#FFF", fontWeight: "700" }}>ホームに戻る</Text>
+        </Pressable>
+      </View>
+    );
+  }
   const hasPremiumCards = isPurchased("com.nikkiai.typelink.premium_cards");
 
   return (

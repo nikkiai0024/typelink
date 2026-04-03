@@ -1,19 +1,34 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import { Stack } from "expo-router";
 import mobileAds from "react-native-google-mobile-ads";
-import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
+import { requestTrackingPermissionsAsync, getTrackingPermissionsAsync } from "expo-tracking-transparency";
 
 export default function RootLayout() {
+  const [attDone, setAttDone] = useState(false);
+
   useEffect(() => {
-    (async () => {
+    // ATT must be requested after the app is fully rendered (not during mount)
+    // Using a short delay ensures the root view is visible before the system dialog appears
+    const timer = setTimeout(async () => {
       if (Platform.OS === "ios") {
-        await requestTrackingPermissionsAsync();
+        try {
+          const { status } = await getTrackingPermissionsAsync();
+          if (status === "undetermined") {
+            await requestTrackingPermissionsAsync();
+          }
+        } catch (e) {
+          console.warn("ATT request failed:", e);
+        }
       }
+      setAttDone(true);
+
       await mobileAds()
         .initialize()
         .catch((e) => console.warn("AdMob init error:", e));
-    })();
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (

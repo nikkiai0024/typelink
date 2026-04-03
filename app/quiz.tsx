@@ -18,42 +18,48 @@ export default function QuizScreen() {
   const [scores, setScores] = useState<Scores>({ EI: 0, SN: 0, TF: 0, JP: 0 });
   const [detailedAnswers, setDetailedAnswers] = useState<("a" | "b")[]>([]);
 
-  const question = quizQuestions[index];
+  // Guard: out-of-bounds index would crash
+  const question = quizQuestions[index] ?? quizQuestions[0];
 
   const handleAnswer = useCallback(
     (choice: "a" | "b") => {
       if (isDetailed) {
-        const newAnswers = [...detailedAnswers, choice];
-
-        if (index + 1 >= detailedQuestions.length) {
-          const result = calculateDetailedResult(detailedQuestions, newAnswers);
-          router.replace(
-            `/detailed-result?type=${result.type}&axisScores=${encodeURIComponent(
-              JSON.stringify(result.axisScores)
-            )}&cognitiveScores=${encodeURIComponent(
-              JSON.stringify(result.cognitiveScores)
-            )}`
-          );
-        } else {
-          setDetailedAnswers(newAnswers);
-          setIndex(index + 1);
-        }
+        // Use functional setState to avoid stale closure
+        setDetailedAnswers(prev => {
+          const newAnswers = [...prev, choice];
+          if (index + 1 >= detailedQuestions.length) {
+            const result = calculateDetailedResult(detailedQuestions, newAnswers);
+            router.replace(
+              `/detailed-result?type=${result.type}&axisScores=${encodeURIComponent(
+                JSON.stringify(result.axisScores)
+              )}&cognitiveScores=${encodeURIComponent(
+                JSON.stringify(result.cognitiveScores)
+              )}`
+            );
+          } else {
+            setIndex(i => i + 1);
+          }
+          return newAnswers;
+        });
       } else {
-        const newScores = { ...scores };
-        if (choice === "b") {
-          newScores[(question as typeof questions[0]).dimension] += 1;
-        }
+        // Use functional setState to avoid stale closure
+        setScores(prev => {
+          const dimension = (question as typeof questions[0]).dimension;
+          const newScores = choice === "b"
+            ? { ...prev, [dimension]: prev[dimension] + 1 }
+            : { ...prev };
 
-        if (index + 1 >= questions.length) {
-          const type = calculateType(newScores);
-          router.replace(`/result?type=${type}`);
-        } else {
-          setScores(newScores);
-          setIndex(index + 1);
-        }
+          if (index + 1 >= questions.length) {
+            const type = calculateType(newScores);
+            router.replace(`/result?type=${type}`);
+          } else {
+            setIndex(i => i + 1);
+          }
+          return newScores;
+        });
       }
     },
-    [index, scores, question, router, isDetailed, detailedAnswers]
+    [index, question, router, isDetailed]
   );
 
   const questionText = isDetailed

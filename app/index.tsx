@@ -22,6 +22,7 @@ export default function HomeScreen() {
       AsyncStorage.getItem("@typelink_last_result").then((val) => {
         if (val) setLastResult(JSON.parse(val));
       });
+      return () => {};
     }, [refresh])
   );
 

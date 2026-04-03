@@ -19,7 +19,8 @@
       "infoPlist": {
         "NSUserTrackingUsageDescription": "広告をパーソナライズするために使用します",
         "NSPhotoLibraryUsageDescription": "TypeLink uses photo library access to save your MBTI type share card to your camera roll. This allows you to share your result on X (Twitter), Instagram, or other social media.",
-        "NSPhotoLibraryAddUsageDescription": "TypeLink saves your MBTI type share card image to your camera roll when you tap the save button. The saved image can then be shared on social media."
+        "NSPhotoLibraryAddUsageDescription": "TypeLink saves your MBTI type share card image to your camera roll when you tap the save button. The saved image can then be shared on social media.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -29,7 +30,10 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "package": "com.nikkiai.typelink"
+      "package": "com.nikkiai.typelink",
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",

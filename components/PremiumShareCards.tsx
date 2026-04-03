@@ -36,7 +36,8 @@ const DESIGN_NAMES: Record<string, string> = {
 };
 
 function lighten(hex: string, percent: number): string {
-  const num = parseInt(hex.replace("#", ""), 16);
+  // 先頭6文字のみ使う（8文字のアルファ付きhexに対応）
+  const num = parseInt(hex.replace("#", "").slice(0, 6), 16);
   const r = Math.min(255, ((num >> 16) & 0xff) + Math.round((255 * percent) / 100));
   const g = Math.min(255, ((num >> 8) & 0xff) + Math.round((255 * percent) / 100));
   const b = Math.min(255, (num & 0xff) + Math.round((255 * percent) / 100));
@@ -44,7 +45,8 @@ function lighten(hex: string, percent: number): string {
 }
 
 function darken(hex: string, percent: number): string {
-  const num = parseInt(hex.replace("#", ""), 16);
+  // 先頭6文字のみ使う（8文字のアルファ付きhexに対応）
+  const num = parseInt(hex.replace("#", "").slice(0, 6), 16);
   const r = Math.max(0, ((num >> 16) & 0xff) - Math.round((255 * percent) / 100));
   const g = Math.max(0, ((num >> 8) & 0xff) - Math.round((255 * percent) / 100));
   const b = Math.max(0, (num & 0xff) - Math.round((255 * percent) / 100));
