@@ -2,7 +2,7 @@
   "expo": {
     "name": "TypeLink",
     "slug": "mbti-app",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +15,9 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.nikkiai.typelink",
-      "buildNumber": "6",
+      "buildNumber": "7",
+      "privacyPolicyUrl": "https://nikki-apps.com/typelink/privacy.html",
+      "marketingUrl": "https://nikki-apps.com/typelink/",
       "infoPlist": {
         "NSUserTrackingUsageDescription": "広告をパーソナライズするために使用します",
         "NSPhotoLibraryUsageDescription": "TypeLink uses photo library access to save your MBTI type share card to your camera roll. This allows you to share your result on X (Twitter), Instagram, or other social media.",
