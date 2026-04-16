@@ -1,34 +1,48 @@
-import { useEffect, useState } from "react";
-import { Platform } from "react-native";
+import { useEffect, useRef } from "react";
+import { Platform, AppState, AppStateStatus } from "react-native";
 import { Stack } from "expo-router";
 import mobileAds from "react-native-google-mobile-ads";
 import { requestTrackingPermissionsAsync, getTrackingPermissionsAsync } from "expo-tracking-transparency";
 
+async function initializeAdsWithATT() {
+  if (Platform.OS === "ios") {
+    try {
+      const { status } = await getTrackingPermissionsAsync();
+      if (status === "undetermined") {
+        await requestTrackingPermissionsAsync();
+      }
+    } catch (e) {
+      console.warn("ATT request failed:", e);
+    }
+  }
+  await mobileAds()
+    .initialize()
+    .catch((e) => console.warn("AdMob init error:", e));
+}
+
 export default function RootLayout() {
-  const [attDone, setAttDone] = useState(false);
+  const attRequested = useRef(false);
 
   useEffect(() => {
-    // ATT must be requested after the app is fully rendered (not during mount)
-    // Using a short delay ensures the root view is visible before the system dialog appears
-    const timer = setTimeout(async () => {
-      if (Platform.OS === "ios") {
-        try {
-          const { status } = await getTrackingPermissionsAsync();
-          if (status === "undetermined") {
-            await requestTrackingPermissionsAsync();
-          }
-        } catch (e) {
-          console.warn("ATT request failed:", e);
-        }
+    // Request ATT when AppState becomes active.
+    // This ensures the root view is fully rendered and the app is in foreground,
+    // which is required for the ATT dialog to appear on iOS 17+ and iOS 26.
+    const handleAppStateChange = (nextState: AppStateStatus) => {
+      if (nextState === "active" && !attRequested.current) {
+        attRequested.current = true;
+        initializeAdsWithATT();
       }
-      setAttDone(true);
+    };
 
-      await mobileAds()
-        .initialize()
-        .catch((e) => console.warn("AdMob init error:", e));
-    }, 500);
+    const subscription = AppState.addEventListener("change", handleAppStateChange);
 
-    return () => clearTimeout(timer);
+    // Also trigger immediately if already active (handles fresh launch)
+    if (AppState.currentState === "active" && !attRequested.current) {
+      attRequested.current = true;
+      initializeAdsWithATT();
+    }
+
+    return () => subscription.remove();
   }, []);
 
   return (
